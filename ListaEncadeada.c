@@ -30,7 +30,7 @@ void listar(struct No *lista){
     struct No *noAtual = lista;
     
     if (noAtual == NULL)
-		printf("Lista vazia\n ");
+		printf("Lista vazia.\n");
     else
 	{
         while(noAtual != NULL){
@@ -53,11 +53,13 @@ int main()
         scanf("%d", &valor);
        
         inserir(valor, &lista);
-        printf("opção (0-SAIR): ");
+        printf("opÃ§Ã£o (0 para sair): ");
         scanf("%d", &opcao);
     } while(opcao != 0);
 
     listar(lista);
     
-    system("pause");
+    getchar();
+
+    return 0;
 }
