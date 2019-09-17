@@ -2,13 +2,12 @@
 #include <stdio.h>
 #include <locale.h>
  
-struct No
-{
+struct No {
     int numero;
     struct No *prox;
 };
  
-void inserir(int numero, struct No **lista){
+void inserir(int numero, struct No **lista) {
     struct No *novoNo = (struct No*) malloc(sizeof(struct No));
     novoNo->numero = numero;
     novoNo->prox = NULL;
@@ -26,7 +25,7 @@ void inserir(int numero, struct No **lista){
     }
 }
  
-void listar(struct No *lista){
+void listar(struct No *lista) {
     struct No *noAtual = lista;
     
     if (noAtual == NULL)
@@ -39,26 +38,66 @@ void listar(struct No *lista){
         }
     }
 }
+
+bool remover(int numero, struct No **lista) {
+    struct No *noAtual = *lista;
+    struct No *noAnterior = NULL;
+    bool removeu = false;
+
+    while (noAtual != NULL) {
+        if (noAtual->numero == numero) {
+            if (noAnterior == NULL)
+                *lista = NULL;
+            else {
+                removeu = true;
+                noAnterior->prox = noAtual->prox;                
+                free(noAtual);
+            }
+        }
+
+        noAnterior = noAtual;
+        noAtual = noAtual->prox;
+    }
+
+    return removeu;
+}
  
-int main()
-{
+int main() {
 	setlocale(LC_ALL, "Portuguese");
 	
     int opcao, valor;
     struct No *lista = NULL;
-   
-    do
-	{
-        printf("valor: ");
-        scanf("%d", &valor);
-       
-        inserir(valor, &lista);
-        printf("opção (0 para sair): ");
-        scanf("%d", &opcao);
-    } while(opcao != 0);
+    bool removeu;
 
-    listar(lista);
-    
+    do {
+        printf("1) Inserir\n");
+        printf("2) Remover\n");
+        printf("3) Listar\n");
+        printf("4) Sair\n\n");
+        printf("opcao: ");
+        scanf("%d", &opcao);
+        switch(opcao) {
+            case 1: 
+                printf("Inserir valor:");
+                scanf("%d", &valor);
+                inserir(valor, &lista);
+                break;
+
+            case 2: 
+                printf("Remover valor:");
+                scanf("%d", &valor);
+                removeu = remover(valor, &lista);
+                if (removeu == false)
+                    printf("Não foi possível remover valor. Valor não encontrado.");
+                break;
+
+            case 3: 
+                printf("\n--- Lista ---\n");
+                listar(lista);
+                break;
+        }
+    } while(opcao != 4);
+
     getchar();
 
     return 0;
