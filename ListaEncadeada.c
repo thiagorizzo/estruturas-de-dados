@@ -1,10 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <locale.h>
+#include <stdbool.h> 
  
 struct No {
     int numero;
     struct No *prox;
+    struct No *ant;
 };
  
 void inserir(int numero, struct No **lista) {
@@ -20,7 +22,8 @@ void inserir(int numero, struct No **lista) {
 
         while(noAtual->prox != NULL)
 			noAtual = noAtual->prox;
-        
+
+		novoNo->ant = noAtual;
 		noAtual->prox = novoNo;
     }
 }
@@ -50,7 +53,8 @@ bool remover(int numero, struct No **lista) {
                 *lista = NULL;
             else {
                 removeu = true;
-                noAnterior->prox = noAtual->prox;                
+                noAnterior->prox = noAtual->prox;  
+				noAtual->prox->ant = noAnterior;              
                 free(noAtual);
             }
         }
@@ -65,15 +69,17 @@ bool remover(int numero, struct No **lista) {
 int main() {
 	setlocale(LC_ALL, "Portuguese");
 	
-    int opcao, valor;
+    int opcao, valor, opcaoPercorrer;
     struct No *lista = NULL;
+    struct No *noPercorrer = NULL;
     bool removeu;
 
     do {
         printf("1) Inserir\n");
         printf("2) Remover\n");
         printf("3) Listar\n");
-        printf("4) Sair\n\n");
+        printf("4) Percorrer Lista\n");
+        printf("5) Sair\n\n");
         printf("opcao: ");
         scanf("%d", &opcao);
         switch(opcao) {
@@ -88,15 +94,47 @@ int main() {
                 scanf("%d", &valor);
                 removeu = remover(valor, &lista);
                 if (removeu == false)
-                    printf("NÃ£o foi possÃ­vel remover valor. Valor nÃ£o encontrado.");
+                    printf("Não foi possível remover valor. Valor não encontrado.");
                 break;
 
             case 3: 
                 printf("\n--- Lista ---\n");
                 listar(lista);
                 break;
+                
+            case 4:
+        		noPercorrer = lista;
+            	do {
+			        printf("1) Proximo\n");
+			        printf("2) Anterior\n");
+			        printf("3) Apresentar Atual\n");
+			        printf("4) Sair\n\n");
+			        printf("opcao: ");
+			        scanf("%d", &opcaoPercorrer);
+            		
+            		switch(opcaoPercorrer) {
+						case 1:
+							if (noPercorrer->prox == NULL)
+								printf("Não há nó próximo. Último nó da lista.\n\n");
+							else
+								noPercorrer = noPercorrer->prox;
+							break;
+							
+						case 2:
+							if (noPercorrer->ant == NULL)
+								printf("Não há nó anterior. Primeiro nó da lista.\n\n");
+							else
+								noPercorrer = noPercorrer->ant;
+							break;
+							
+						case 3:
+							printf("Atual: %d\n", noPercorrer->numero);
+							break;	
+					}
+				} while(opcaoPercorrer != 4);
+				break;
         }
-    } while(opcao != 4);
+    } while(opcao != 5);
 
     getchar();
 
